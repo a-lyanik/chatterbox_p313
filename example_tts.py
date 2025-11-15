@@ -1,3 +1,4 @@
+import os
 import torchaudio as ta
 import torch
 from chatterbox.tts import ChatterboxTTS
@@ -27,5 +28,8 @@ ta.save("test-2.wav", wav, multilingual_model.sr)
 
 # If you want to synthesize with a different voice, specify the audio prompt
 AUDIO_PROMPT_PATH = "YOUR_FILE.wav"
-wav = model.generate(text, audio_prompt_path=AUDIO_PROMPT_PATH)
-ta.save("test-3.wav", wav, model.sr)
+if os.path.isfile(AUDIO_PROMPT_PATH):
+    wav = model.generate(text, audio_prompt_path=AUDIO_PROMPT_PATH)
+    ta.save("test-3.wav", wav, model.sr)
+else:
+    print(f"Skipping reference-voice example: '{AUDIO_PROMPT_PATH}' not found.")

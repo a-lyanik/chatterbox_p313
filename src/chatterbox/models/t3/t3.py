@@ -260,6 +260,12 @@ class T3(nn.Module):
             # Default to None for English models, only create for multilingual
             alignment_stream_analyzer = None
             if self.hp.is_multilingual:
+                # Alignment spy requires attention outputs, which only work with eager attention impl.
+                if hasattr(self.tfmr, "set_attn_implementation"):
+                    self.tfmr.set_attn_implementation("eager")
+                else:
+                    self.tfmr.config.attn_implementation = "eager"
+
                 alignment_stream_analyzer = AlignmentStreamAnalyzer(
                     self.tfmr,
                     None,
